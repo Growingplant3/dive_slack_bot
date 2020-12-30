@@ -1,5 +1,4 @@
 class BotsController < ApplicationController
-  require "slack-notify"
   before_action :set_bot, only: [:show, :edit, :update, :destroy]
 
   # GET /bots
@@ -29,13 +28,7 @@ class BotsController < ApplicationController
 
     respond_to do |format|
       if @bot.save
-        client = SlackNotify::Client.new(
-          webhook_url: ENV['SLACK_WEBHOOK_URL'],
-          channel: "#gemの実装",
-          username: "mybot",
-          link_names: 1
-        )
-        client.notify("#{@bot.requirement}")
+        SlackPostJob.perform_later(@bot.requirement)
         format.html { redirect_to @bot, notice: 'Bot was successfully created.' }
         format.json { render :show, status: :created, location: @bot }
       else
