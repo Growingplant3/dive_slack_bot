@@ -22,5 +22,6 @@ module DiveSlackBot
     config.time_zone = 'Tokyo'
     config.active_record.default_timezone = :local  
     config.generators.system_tests = nil
+    config.active_job.queue_adapter = :delayed_job
   end
 end
